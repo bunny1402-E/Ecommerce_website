@@ -2,7 +2,7 @@ import requests
 import pyodbc
 import sys
 
-# 1. Connect to MS SQL Server
+
 
 conn = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};'
@@ -12,7 +12,6 @@ conn = pyodbc.connect(
 )
 cursor = conn.cursor()
 
-# 2. Fetch data from the DummyJSON API
 print("Fetching products from DummyJSON API...")
 url = "https://dummyjson.com/products?limit=0"
 response = requests.get(url)
@@ -27,16 +26,14 @@ if response.status_code != 200:
 data = response.json()
 products_list = data.get('products', [])
 
-# 3. Loop through products and insert into MS SQL
+
 print("Inserting data into MS SQL...")
 print("Cleaning old data...")
 cursor.execute("DELETE FROM Products") 
 
 for item in products_list:
-    # Convert USD to INR
     price_inr = round(float(item['price']) * 83.0, 2)
-    # Some items might have long descriptions, truncate if necessary or just insert
-    # DummyJSON provides a 'thumbnail' which is a single image URL
+   
     image_url = item.get('thumbnail', '')
     
     cursor.execute('''
