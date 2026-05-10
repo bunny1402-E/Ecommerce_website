@@ -1,4 +1,4 @@
-#Basic E-Commerce Platform
+#Basic E-Commerce Platform(Quantum Cart)
 
 A dynamic, lightweight e-commerce storefront built with Python, Flask, and MS SQL Server. 
 
