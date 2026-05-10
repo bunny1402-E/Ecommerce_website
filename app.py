@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 import pyodbc
-# NEW: Import security functions for password hashing
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -16,12 +16,11 @@ def get_db_connection():
     )
     return conn
 
-# --- NEW ROUTE: The Landing Page ---
+
 @app.route('/')
 def landing_page():
     return render_template('landing.html')
 
-# --- MOVED ROUTE: The Actual Storefront ---
 @app.route('/store')
 def store():
     search_query = request.args.get('q', '')
@@ -30,7 +29,7 @@ def store():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Get distinct categories for the sidebar/navbar
+
     cursor.execute('SELECT DISTINCT Category FROM Products WHERE Category IS NOT NULL')
     categories = [row[0] for row in cursor.fetchall()]
     
@@ -108,11 +107,11 @@ def clear_cart():
 
 @app.route('/checkout')
 def checkout():
-    # Route Protection: Check if they are logged in first!
+   
     if 'user_id' not in session:
         return redirect(url_for('login', next=request.path))
         
-    # If they make it past the check, process the order
+
     session.pop('cart', None)
     return render_template('success.html')
 # --- AUTHENTICATION ROUTES ---
@@ -188,14 +187,14 @@ def dashboard():
     return render_template('dashboard.html', name=session['user_name'])
 
 # 8. Logout Route
-# 8. Logout Route
+
 @app.route('/logout')
 def logout():
-    # Remove user data from the session
+
     session.pop('user_id', None)
     session.pop('user_name', None)
     
-    # FIXED: Send them back to the new animated landing page!
+  
     return redirect(url_for('landing_page'))
 
 if __name__ == '__main__':
