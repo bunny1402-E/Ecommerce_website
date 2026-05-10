@@ -1,5 +1,3 @@
--- Run this script in MS SQL Server Management Studio to set up the database
-
 CREATE DATABASE EcommerceDB;
 GO
 

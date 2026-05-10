@@ -2,49 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Cart</title>
+    <title>Your Cart | QuantumCart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-quantum mb-4 sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/store">QuantumCart</a>
+            <a class="navbar-brand glowing-text fw-bold" href="/store">QuantumCart</a>
         </div>
     </nav>
 
-    <div class="container">
-        <h2 class="mb-4">Shopping Cart</h2>
+    <div class="container py-4">
+        <h2 class="glowing-text mb-5 text-center">Shopping Cart</h2>
         
         {% if cart_items %}
-            <table class="table table-bordered bg-white">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in cart_items %}
-                    <tr>
-                        <td>{{ item.title }}</td>
-                        <td>${{ item.price }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td class="fw-bold">${{ item.total }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="glass-card p-4 mb-4">
+                <div class="table-responsive">
+                    <table class="table table-quantum align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="product-img-bg p-2 me-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                            <img src="{{ item.image }}" style="max-height: 100%; max-width: 100%;">
+                                        </div>
+                                        <span class="fw-semibold">{{ item.title }}</span>
+                                    </div>
+                                </td>
+                                <td>₹{{ item.price }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td class="fw-bold text-info">₹{{ item.total }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             
-            <div class="text-end mt-3">
-                <h4>Total: <span class="text-success">${{ total_price }}</span></h4>
-                <a href="/checkout" class="btn btn-success btn-lg mt-2">Proceed to Checkout</a>
+            <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+                <a href="/clear_cart" class="btn btn-outline-danger rounded-pill px-4">Clear Cart</a>
+                <div class="text-end ms-auto">
+                    <h3 class="mb-3 d-inline-block me-4">Total: <span class="glowing-text">₹{{ total_price }}</span></h3>
+                    <a href="/checkout" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg">Proceed to Checkout</a>
+                </div>
             </div>
         {% else %}
-            <div class="alert alert-info">Your cart is currently empty.</div>
-            <a href="/" class="btn btn-primary">Go Back Shopping</a>
+            <div class="glass-card p-5 text-center mx-auto" style="max-width: 500px;">
+                <div class="fs-1 mb-3">🛒</div>
+                <h3 class="mb-4">Your cart is currently empty.</h3>
+                <a href="/store" class="btn btn-primary btn-lg rounded-pill px-5 mt-2">Go Back Shopping</a>
+            </div>
         {% endif %}
     </div>
 

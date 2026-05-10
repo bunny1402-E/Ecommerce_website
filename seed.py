@@ -3,7 +3,7 @@ import pyodbc
 import sys
 
 # 1. Connect to MS SQL Server
-# REMEMBER: Change this to your actual server name!
+
 conn = pyodbc.connect(
     'DRIVER={ODBC Driver 17 for SQL Server};'
     'SERVER=localhost;'  
@@ -14,7 +14,7 @@ cursor = conn.cursor()
 
 # 2. Fetch data from the DummyJSON API
 print("Fetching products from DummyJSON API...")
-url = "https://dummyjson.com/products?limit=100"
+url = "https://dummyjson.com/products?limit=0"
 response = requests.get(url)
 
 print(f"API Server responded with status code: {response.status_code}")
@@ -23,26 +23,32 @@ if response.status_code != 200:
     print("\n[ERROR] The API is currently down.")
     sys.exit() 
 
-# DummyJSON puts the list of items inside a dictionary key called 'products'
+
 data = response.json()
-products_list = data['products']
+products_list = data.get('products', [])
 
 # 3. Loop through products and insert into MS SQL
 print("Inserting data into MS SQL...")
 print("Cleaning old data...")
 cursor.execute("DELETE FROM Products") 
-# This clears the table so 'ID 1' can be inserted again without conflict.
+
 for item in products_list:
+    # Convert USD to INR
+    price_inr = round(float(item['price']) * 83.0, 2)
+    # Some items might have long descriptions, truncate if necessary or just insert
+    # DummyJSON provides a 'thumbnail' which is a single image URL
+    image_url = item.get('thumbnail', '')
+    
     cursor.execute('''
         INSERT INTO Products (ProductID, Title, Price, Description, Category, ImageURL)
         VALUES (?, ?, ?, ?, ?, ?)
-    ''', (item['id'], item['title'], item['price'], item['description'], item['category'], item['thumbnail']))
+    ''', (item['id'], item['title'], price_inr, item['description'], item['category'], image_url))
 
-# 4. Save and Close
+
 conn.commit()
 cursor.close()
 conn.close()
 
 
 
-print("Database successfully seeded with products!")
+print("Database successfully seeded with new products!")
